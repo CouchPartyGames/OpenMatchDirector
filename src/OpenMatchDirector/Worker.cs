@@ -1,34 +1,41 @@
+using Grpc.Core;
 using OpenMatchDirector.OpenMatch;
 
 namespace OpenMatchDirector;
 
-public class Worker : BackgroundService, IHostedLifecycleService
+public class Worker(ILogger<Worker> logger,
+        BackendService.BackendServiceClient beClient)
+    : BackgroundService, IHostedLifecycleService
 {
-    private readonly ILogger<Worker> _logger;
-
-    private readonly BackendService.BackendServiceClient _beClient;
-    private readonly QueryService.QueryServiceClient _queryClient;
-
-    public Worker(ILogger<Worker> logger,
-        BackendService.BackendServiceClient beClient,
-        QueryService.QueryServiceClient queryClient)
-    {
-        _logger = logger;
-        _beClient = beClient;
-        _queryClient = queryClient;
-    }
+    private readonly ILogger<Worker> _logger = logger;
+    private readonly BackendService.BackendServiceClient _backendClient = beClient;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var profiles = new Profiles();
+        var profileFuncs = profiles.GenerateProfiles();
+            
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (_logger.IsEnabled(LogLevel.Information))
+            foreach (var myItem in profileFuncs)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                
+                var request = new FetchMatches.RequestBuilder()
+                    .WithFunctionConfig(myItem.Func)
+                    .WithMatchProfile(myItem.Profile)
+                    .Build();
+                
+                    // Fetch Matches
+                using var call = beClient.FetchMatches(request);
+                await foreach (var response in call.ResponseStream.ReadAllAsync()) {
+                    //_logger.LogInformation(response);
+                    
+                    // Allocate
+                    // Assignment
+                }
             }
-            
-                // Allocate Dedicated Server
-                // Assign Dedicated Server
+
+            logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             await Task.Delay(1000, stoppingToken);
         }
     }
@@ -56,4 +63,5 @@ public class Worker : BackgroundService, IHostedLifecycleService
         _logger.LogInformation("Stopped at: {time}", DateTimeOffset.Now);
         return Task.CompletedTask;
     }
+
 }

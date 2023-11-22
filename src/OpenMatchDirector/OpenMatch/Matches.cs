@@ -8,17 +8,6 @@ public sealed class FetchMatches(BackendService.BackendServiceClient _client)
         return true;
     }
 
-    // Connection details for the backend service to determine what match maker should be used
-    public static FunctionConfig CreateFunctionConfig(string host, int port, bool isGrpc)
-    {
-        var type = isGrpc ? FunctionConfig.Types.Type.Grpc : FunctionConfig.Types.Type.Rest;
-        return new FunctionConfig
-        {
-            Host = host,
-            Port = port,
-            Type = type
-        };
-    }
 
     public sealed class RequestBuilder
     {

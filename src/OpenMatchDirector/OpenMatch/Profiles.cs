@@ -1,59 +1,20 @@
 namespace OpenMatchDirector.OpenMatch;
 
-public interface IMode
-{
-    List<Profiles.Mode> Modes { get; }
-}
-
-public sealed class DefaultModes : IMode
-{
-    public List<Profiles.Mode> Modes { get; } = new()
-    {
-        new Profiles.Mode("mode.ctf"),
-        new Profiles.Mode("mode.tournament")
-    };
-}
 
 public sealed class Profiles
 {
-    private IMode _mode;
-    public Profiles(IMode mode) => _mode = mode;
+    private List<MatchProfileFunction> _profiles = new();
     
-    public List<Mode> Modes { get; } = new() { new Mode("mode.ctf") };
-    
-    public RepeatedField<MatchProfile> GenerateProfiles()
-    { 
-        var profiles = new RepeatedField<MatchProfile>();
-        foreach(var mode in Modes)
+    public List<MatchProfileFunction> GenerateProfiles()
+    {
+        var defaultProfile = new MatchProfile
         {
-
-            var poolName = $"pool_{mode.Value}";
-            
-            /*
-            Pool pool = new PoolBuilder()
-                .WithName(poolName)
-                .AddTags()
-                .AddStringFilters()
-                .AddRangeFilters()
-                .Build();
-                */
-            
-            //mode.Value;
-            Pool pool = new Pool
-            {
-                Name = poolName,
-                TagPresentFilters = { },
-                StringEqualsFilters = { }
-            };
-
-            var profile = new MatchProfile();
-            profile.Name = $"profile_{mode.Value}";
-            profile.Pools.Add(pool);
-            
-            profiles.Add(profile);
-        }
-
-        return profiles;
+            Name = "default-profile"
+        };
+        var defaultFunc = CreateFunctionConfig("test", 5505);
+        _profiles.Add(new MatchProfileFunction(defaultProfile, defaultFunc));
+        
+        return _profiles;
     }
 
     public class PoolBuilder
@@ -99,12 +60,23 @@ public sealed class Profiles
         public Pool Build() => _pool;
     }
 
+    // Connection details for the backend service to determine what match maker should be used
+    public static FunctionConfig CreateFunctionConfig(string host, int port, bool isGrpc = true)
+    {
+        var type = isGrpc ? FunctionConfig.Types.Type.Grpc : FunctionConfig.Types.Type.Rest;
+        return new FunctionConfig
+        {
+            Host = host,
+            Port = port,
+            Type = type
+        };
+    }
 
     public sealed record DoubleFilter(string Name, double Min, double Max);
         
     public sealed record StringFilter(string Key, string Value);
     
     public sealed record TagFilter(string Value);
-    
-    public sealed record Mode(string Value);
+
+    public sealed record MatchProfileFunction(MatchProfile Profile, FunctionConfig Func);
 }

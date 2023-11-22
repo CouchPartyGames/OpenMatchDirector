@@ -1,14 +1,19 @@
+using Director.Agones;
+
 namespace OpenMatchDirector.OpenMatch;
 
-public class Assign
+public sealed class Assign
 {
     public async Task<bool> AssignTickets(BackendService.BackendServiceClient client, AssignTicketsRequest request)
     {
         var response  = client.AssignTicketsAsync(request);
         return true;
     }
+
+    public static Assignment CreateAssignment(string addr, int port) => new Assignment { Connection = $"{addr}:{port}" };
     
-    public class RequestBuilder
+    
+    public sealed class RequestBuilder
     {
         private AssignTicketsRequest _request = new();
         
@@ -20,4 +25,5 @@ public class Assign
 
         public AssignTicketsRequest Build() => _request;
     }
+
 }
