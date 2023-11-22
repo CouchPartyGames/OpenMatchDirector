@@ -4,11 +4,12 @@ using OpenMatchDirector.OpenMatch;
 namespace OpenMatchDirector;
 
 public class Worker(ILogger<Worker> logger,
+        //IProfileFunction profiles,
         BackendService.BackendServiceClient beClient)
     : BackgroundService, IHostedLifecycleService
 {
+    //private readonly IProfileFunction _profileFuncs;
     private readonly ILogger<Worker> _logger = logger;
-    private readonly BackendService.BackendServiceClient _backendClient = beClient;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -27,7 +28,7 @@ public class Worker(ILogger<Worker> logger,
                 
                     // Fetch Matches
                 using var call = beClient.FetchMatches(request);
-                await foreach (var response in call.ResponseStream.ReadAllAsync()) {
+                await foreach (var response in call.ResponseStream.ReadAllAsync(stoppingToken)) {
                     //_logger.LogInformation(response);
                     
                     // Allocate

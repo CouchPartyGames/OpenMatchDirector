@@ -17,6 +17,7 @@ builder.Services.AddGrpcClient<BackendService.BackendServiceClient>(o =>
 }).AddStandardResilienceHandler();
 
 builder.Services.AddHostedService<Worker>();
+//builder.Services.AddSingleton<IProfileFunction, MatchProfileFunction>();
 
 var host = builder.Build();
 host.Run();

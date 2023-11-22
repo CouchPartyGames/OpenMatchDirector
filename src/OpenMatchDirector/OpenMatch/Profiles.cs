@@ -1,5 +1,6 @@
 namespace OpenMatchDirector.OpenMatch;
 
+public interface IProfileMatchFunction { }
 
 public sealed class Profiles
 {
