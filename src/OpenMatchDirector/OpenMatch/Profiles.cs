@@ -1,19 +1,20 @@
+using OpenMatchDirector.Profiles;
+
 namespace OpenMatchDirector.OpenMatch;
 
-public interface IProfileMatchFunction { }
 
 public sealed class Profiles
 {
-    private List<MatchProfileFunction> _profiles = new();
+    private List<ProfileFunctionMap> _profiles = new();
     
-    public List<MatchProfileFunction> GenerateProfiles()
+    public List<ProfileFunctionMap> GenerateProfiles()
     {
         var defaultProfile = new MatchProfile
         {
             Name = "default-profile"
         };
         var defaultFunc = CreateFunctionConfig("test", 5505);
-        _profiles.Add(new MatchProfileFunction(defaultProfile, defaultFunc));
+        _profiles.Add(new ProfileFunctionMap(defaultProfile, defaultFunc));
         
         return _profiles;
     }
@@ -78,6 +79,4 @@ public sealed class Profiles
     public sealed record StringFilter(string Key, string Value);
     
     public sealed record TagFilter(string Value);
-
-    public sealed record MatchProfileFunction(MatchProfile Profile, FunctionConfig Func);
 }

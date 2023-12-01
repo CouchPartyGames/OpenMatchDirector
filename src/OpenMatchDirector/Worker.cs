@@ -1,30 +1,31 @@
 using Grpc.Core;
 using OpenMatchDirector.OpenMatch;
+using OpenMatchDirector.Profiles;
 
 namespace OpenMatchDirector;
 
 public class Worker(ILogger<Worker> logger,
-        //IProfileFunction profiles,
+        IProfileFunctionMap profiles,
         BackendService.BackendServiceClient beClient)
     : BackgroundService, IHostedLifecycleService
 {
-    //private readonly IProfileFunction _profileFuncs;
+    //private readonly IProfileFunctionMap _map = profiles;
     private readonly ILogger<Worker> _logger = logger;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var profiles = new Profiles();
         var profileFuncs = profiles.GenerateProfiles();
-            
         while (!stoppingToken.IsCancellationRequested)
         {
-            foreach (var myItem in profileFuncs)
+            foreach (var map in profileFuncs)
             {
                 
                 var request = new FetchMatches.RequestBuilder()
-                    .WithFunctionConfig(myItem.Func)
-                    .WithMatchProfile(myItem.Profile)
+                    .WithFunctionConfig(map.Function)
+                    .WithMatchProfile(map.Profile)
                     .Build();
+                
+                _logger.LogInformation("Request: {request}", request);
                 
                     // Fetch Matches
                 using var call = beClient.FetchMatches(request);
