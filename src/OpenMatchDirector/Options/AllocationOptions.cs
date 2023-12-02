@@ -1,6 +1,10 @@
 namespace OpenMatchDirector.Options;
 
-public class AllocationOptions
+public sealed class AllocationOptions
 {
+    public const string SectionName = "Allocations";
     
+    public string Name { get; }
+    public string Address { get; }
+    public int Port { get; }
 }
