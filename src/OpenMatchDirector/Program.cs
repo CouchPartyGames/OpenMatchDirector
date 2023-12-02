@@ -19,7 +19,7 @@ builder.Services
     .AddGrpcClient<BackendService.BackendServiceClient>(o =>
     {
         var address = builder.Configuration["OPENMATCH_BACKEND_HOST"] ??
-                      "https://open-match-backend.open-match.svc.cluster.local:50505";
+                      "http://open-match-backend.open-match.svc.cluster.local:50505";
         o.Address = new Uri(address);
     })
     .ConfigurePrimaryHttpMessageHandler(() =>
