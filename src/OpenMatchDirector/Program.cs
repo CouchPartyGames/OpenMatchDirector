@@ -4,9 +4,11 @@ using Microsoft.Extensions.Diagnostics.Metrics;
 using Microsoft.Extensions.Http.Resilience;
 using OpenMatchDirector;
 using OpenMatchDirector.Interceptors;
+using OpenMatchDirector.Options;
 using OpenMatchDirector.Profiles;
 
 var builder = Host.CreateApplicationBuilder(args);
+builder.Logging.ClearProviders();
 builder.Services.Configure<HostOptions>(o =>
 {
     o.ShutdownTimeout = TimeSpan.FromSeconds(15);
@@ -14,6 +16,16 @@ builder.Services.Configure<HostOptions>(o =>
     o.ServicesStopConcurrently = true;
     o.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 });
+/*
+builder.Services
+    .AddOptions<AllocationList>()
+    .Bind(builder.Configuration, options =>
+    {
+        options.ErrorOnUnknownConfiguration = true;
+    })
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+*/
 
 builder.Services
     .AddGrpcClient<BackendService.BackendServiceClient>(o =>
@@ -39,8 +51,8 @@ var defaultProfile = new DefaultProfiles();
 builder.Services.AddSingleton<ResolverFactory>(
     sp => new DnsResolverFactory(refreshInterval: TimeSpan.FromSeconds(30)));
 builder.Services.AddTransient<ExceptionInterceptor>();
-builder.Services.AddHostedService<Worker>();
 builder.Services.AddSingleton<IProfileFunctionMap>(defaultProfile);
+builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();
 host.Run();
