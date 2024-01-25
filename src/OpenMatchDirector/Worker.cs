@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using OpenMatchDirector.OpenMatch;
 using OpenMatchDirector.Profiles;
@@ -17,6 +18,7 @@ public class Worker(ILogger<Worker> logger,
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var profileFuncs = profiles.GenerateProfiles();
+        
         while (!stoppingToken.IsCancellationRequested)
         {
             foreach (var map in profileFuncs)
@@ -31,11 +33,32 @@ public class Worker(ILogger<Worker> logger,
                 
                     // Fetch Matches
                 using var call = beClient.FetchMatches(request);
-                await foreach (var response in call.ResponseStream.ReadAllAsync(stoppingToken)) {
-                    //_logger.LogInformation(response);
+                await foreach (var response in call.ResponseStream.ReadAllAsync(stoppingToken))
+                {
+
+                    RepeatedField<string> ticketIds = [];
+                    foreach (var id in response.Match.Tickets)
+                    {
+                       ticketIds.Add(id.Id); 
+                    }
                     
-                    // Allocate
-                    // Assignment
+                        // Allocate
+                    var connection = "192.168.1.1:5000";
+                    
+                        // Assignment
+                    AssignmentGroup assignGroup = new AssignmentGroup();
+                    assignGroup.Assignment.Connection = connection;
+                    //test.Assignment.Extensions = new MapField<string, Any>();
+                    assignGroup.TicketIds.Add(ticketIds);
+                    
+                    var assignRequest = new Assign.RequestBuilder()
+                        .WithAssignmentGroup(assignGroup)
+                        .Build();
+                    var assignResponse = await beClient.AssignTicketsAsync(assignRequest);
+                    if (assignResponse.Failures.Count > 0)
+                    {
+                        
+                    }
                 }
             }
 

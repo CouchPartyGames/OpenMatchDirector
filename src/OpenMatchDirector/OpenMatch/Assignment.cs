@@ -6,7 +6,7 @@ public sealed class Assign
 {
     public async Task<bool> AssignTickets(BackendService.BackendServiceClient client, AssignTicketsRequest request)
     {
-        var response  = client.AssignTicketsAsync(request);
+        var response  =  await client.AssignTicketsAsync(request);
         return true;
     }
 
@@ -16,6 +16,23 @@ public sealed class Assign
     public sealed class RequestBuilder
     {
         private AssignTicketsRequest _request = new();
+
+        public RequestBuilder WithAssignment(string address, int port)
+        {
+            new Assignment {
+                Connection = $"address:port"
+            };
+            return this;
+        }
+
+        public RequestBuilder WithTicketIds(List<Ticket> tickets)
+        {
+            return this;
+        }
+        public RequestBuilder WithTicketIds(RepeatedField<Ticket> tickets)
+        {
+            return this;
+        }
         
         public RequestBuilder WithAssignmentGroup(AssignmentGroup group)
         {
