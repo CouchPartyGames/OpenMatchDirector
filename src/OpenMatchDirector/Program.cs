@@ -6,9 +6,23 @@ using OpenMatchDirector;
 using OpenMatchDirector.Interceptors;
 using OpenMatchDirector.Options;
 using OpenMatchDirector.Profiles;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Logging.ClearProviders();
+builder.Logging.AddOpenTelemetry(opts =>
+{
+    opts.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("OpenMatchDirector"));
+    opts.IncludeScopes = true;
+    opts.IncludeFormattedMessage = true;
+    opts.AddOtlpExporter(export =>
+    {
+        export.Endpoint = new Uri("http://localhost:4317");
+    });
+});
 builder.Services.Configure<HostOptions>(o =>
 {
     o.ShutdownTimeout = TimeSpan.FromSeconds(15);
@@ -44,6 +58,25 @@ builder.Services
     .AddInterceptor<ExceptionInterceptor>(InterceptorScope.Channel)
     .AddStandardResilienceHandler();
 
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(opts =>
+    {
+        opts.AddRuntimeInstrumentation()
+            .AddHttpClientInstrumentation();
+        
+        opts.AddOtlpExporter(export =>
+        {
+            export.Endpoint = new Uri("http://localhost:4317");
+        });
+    })
+    .WithTracing(opts =>
+    {
+        opts.AddHttpClientInstrumentation();
+        opts.AddOtlpExporter(export =>
+        {
+            export.Endpoint = new Uri("http://localhost:4317");
+        });
+    });
 
 
 var defaultProfile = new DefaultProfiles();
