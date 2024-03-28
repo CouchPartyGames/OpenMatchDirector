@@ -6,6 +6,7 @@ using OpenMatchDirector;
 using OpenMatchDirector.Interceptors;
 using OpenMatchDirector.Options;
 using OpenMatchDirector.Profiles;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -21,6 +22,7 @@ builder.Logging.AddOpenTelemetry(opts =>
     opts.AddOtlpExporter(export =>
     {
         export.Endpoint = new Uri("http://localhost:4317");
+        export.Protocol = OtlpExportProtocol.HttpProtobuf;
     });
 });
 builder.Services.Configure<HostOptions>(o =>
@@ -67,6 +69,7 @@ builder.Services.AddOpenTelemetry()
         opts.AddOtlpExporter(export =>
         {
             export.Endpoint = new Uri("http://localhost:4317");
+            export.Protocol = OtlpExportProtocol.HttpProtobuf;
         });
     })
     .WithTracing(opts =>
@@ -75,6 +78,7 @@ builder.Services.AddOpenTelemetry()
         opts.AddOtlpExporter(export =>
         {
             export.Endpoint = new Uri("http://localhost:4317");
+            export.Protocol = OtlpExportProtocol.HttpProtobuf;
         });
     });
 
