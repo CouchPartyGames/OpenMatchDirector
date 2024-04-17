@@ -13,6 +13,10 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 var builder = Host.CreateApplicationBuilder(args);
+
+builder.Services.Configure<OpenMatchOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
+builder.Services.Configure<OpenTelemetryOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
+
 builder.Logging.ClearProviders();
 builder.Logging.AddOpenTelemetry(opts =>
 {
