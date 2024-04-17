@@ -17,16 +17,17 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.Configure<OpenMatchOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
 builder.Services.Configure<OpenTelemetryOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
 
+var resourceBuilder = ResourceBuilder.CreateDefault().AddService("OpenMatchDirector");
 builder.Logging.ClearProviders();
 builder.Logging.AddOpenTelemetry(opts =>
 {
-    opts.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("OpenMatchDirector"));
+    opts.SetResourceBuilder(resourceBuilder);
     opts.IncludeScopes = true;
     opts.IncludeFormattedMessage = true;
     opts.AddOtlpExporter(export =>
     {
         export.Endpoint = new Uri("http://localhost:4317");
-        export.Protocol = OtlpExportProtocol.HttpProtobuf;
+        export.Protocol = OtlpExportProtocol.Grpc;
     });
 });
 builder.Services.Configure<HostOptions>(o =>
@@ -67,22 +68,25 @@ builder.Services
 builder.Services.AddOpenTelemetry()
     .WithMetrics(opts =>
     {
+        opts.SetResourceBuilder(resourceBuilder);
         opts.AddRuntimeInstrumentation()
             .AddHttpClientInstrumentation();
         
         opts.AddOtlpExporter(export =>
         {
             export.Endpoint = new Uri("http://localhost:4317");
-            export.Protocol = OtlpExportProtocol.HttpProtobuf;
+            export.Protocol = OtlpExportProtocol.Grpc;
         });
     })
     .WithTracing(opts =>
     {
+        opts.SetResourceBuilder(resourceBuilder);
+        opts.SetSampler(new TraceIdRatioBasedSampler(1.0f));
         opts.AddHttpClientInstrumentation();
         opts.AddOtlpExporter(export =>
         {
             export.Endpoint = new Uri("http://localhost:4317");
-            export.Protocol = OtlpExportProtocol.HttpProtobuf;
+            export.Protocol = OtlpExportProtocol.Grpc;
         });
     });
 

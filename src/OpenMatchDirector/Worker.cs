@@ -7,13 +7,11 @@ namespace OpenMatchDirector;
 
 public class Worker(ILogger<Worker> logger,
         IProfileFunctionMap profiles,
-        IConfiguration configuration,
         BackendService.BackendServiceClient beClient)
     : BackgroundService, IHostedLifecycleService
 {
     //private readonly IProfileFunctionMap _map = profiles;
     private readonly ILogger<Worker> _logger = logger;
-    private readonly IConfiguration _configuration = configuration;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -46,8 +44,13 @@ public class Worker(ILogger<Worker> logger,
                     var connection = "192.168.1.1:5000";
                     
                         // Assignment
-                    AssignmentGroup assignGroup = new AssignmentGroup();
-                    assignGroup.Assignment.Connection = connection;
+                    AssignmentGroup assignGroup = new AssignmentGroup
+                    {
+                        Assignment =
+                        {
+                            Connection = connection
+                        }
+                    };
                     //test.Assignment.Extensions = new MapField<string, Any>();
                     assignGroup.TicketIds.Add(ticketIds);
                     
@@ -62,16 +65,15 @@ public class Worker(ILogger<Worker> logger,
                 }
             }
 
-            logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             await Task.Delay(1000, stoppingToken);
         }
     }
 
     public Task StartingAsync(CancellationToken cancellationToken)
     {
-        
+        Console.WriteLine("hello");
         _logger.LogInformation("Starting at: {time}", DateTimeOffset.Now);
-        _logger.LogInformation(message: "OpenMatch Backend: {Host}", _configuration.GetValue<string>("OPENMATCH_BACKEND_HOST"));
         return Task.CompletedTask;
     }
 
