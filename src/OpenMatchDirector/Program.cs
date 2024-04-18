@@ -14,10 +14,16 @@ using OpenTelemetry.Trace;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.Configure<OpenMatchOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
-builder.Services.Configure<OpenTelemetryOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
+builder.Services
+    .Configure<OpenMatchOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
+builder.Services
+    .Configure<OpenTelemetryOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
 
-var resourceBuilder = ResourceBuilder.CreateDefault().AddService("OpenMatchDirector");
+var resourceBuilder = ResourceBuilder
+    .CreateDefault()
+    .AddService("OpenMatchDirector", null, "1.0.0")
+    .AddTelemetrySdk();
+
 builder.Logging.ClearProviders();
 builder.Logging.AddOpenTelemetry(opts =>
 {
