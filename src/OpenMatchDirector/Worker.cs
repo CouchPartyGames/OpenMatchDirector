@@ -1,7 +1,7 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using OpenMatchDirector.OpenMatch;
-using OpenMatchDirector.Profiles;
+using OpenMatchDirector.Utilities.OpenMatch;
+using OpenMatchDirector.Utilities.Profiles;
 
 namespace OpenMatchDirector;
 

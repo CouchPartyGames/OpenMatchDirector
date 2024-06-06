@@ -1,4 +1,4 @@
-namespace OpenMatchDirector.Options;
+namespace OpenMatchDirector.Clients.OpenMatchBackend;
 
 public sealed class OpenMatchOptions
 {

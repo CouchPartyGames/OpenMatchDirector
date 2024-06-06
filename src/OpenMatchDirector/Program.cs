@@ -4,8 +4,7 @@ using OpenMatchDirector.Clients.Agones;
 using OpenMatchDirector.Clients.OpenMatchBackend;
 using OpenMatchDirector.Interceptors;
 using OpenMatchDirector.Observability;
-using OpenMatchDirector.Options;
-using OpenMatchDirector.Profiles;
+using OpenMatchDirector.Utilities.Profiles;
 
 var builder = Host.CreateApplicationBuilder(args);
 

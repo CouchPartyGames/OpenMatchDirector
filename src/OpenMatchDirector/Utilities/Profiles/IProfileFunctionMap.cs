@@ -1,4 +1,4 @@
-namespace OpenMatchDirector.Profiles;
+namespace OpenMatchDirector.Utilities.Profiles;
 
 public interface IProfileFunctionMap
 {

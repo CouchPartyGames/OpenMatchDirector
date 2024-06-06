@@ -41,6 +41,6 @@
     <Protobuf Include="Protos\sdk\sdk.proto" GrpcServices="None" Access="Internal" AdditionalImportDirs="Protos" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Options\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,4 @@
-namespace OpenMatchDirector.Profiles;
-
-using OpenMatchDirector.OpenMatch;
+namespace OpenMatchDirector.Utilities.Profiles;
 
 public class DefaultProfiles : IProfileFunctionMap
 {
@@ -10,7 +8,7 @@ public class DefaultProfiles : IProfileFunctionMap
         {
             Name = "default-profile"
         };
-        var defaultFunc = Profiles.CreateFunctionConfig("test", 5505);
+        var defaultFunc = Utilities.OpenMatch.Profiles.CreateFunctionConfig("test", 5505);
         
         //kvar func = Create
         var map = new ProfileFunctionMap(defaultProfile, defaultFunc);

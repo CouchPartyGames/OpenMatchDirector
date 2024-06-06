@@ -1,6 +1,6 @@
-using OpenMatchDirector.Profiles;
+using OpenMatchDirector.Utilities.Profiles;
 
-namespace OpenMatchDirector.OpenMatch;
+namespace OpenMatchDirector.Utilities.OpenMatch;
 
 
 public sealed class Profiles

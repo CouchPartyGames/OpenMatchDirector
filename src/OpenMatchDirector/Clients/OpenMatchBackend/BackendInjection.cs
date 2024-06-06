@@ -1,6 +1,5 @@
 using Grpc.Net.ClientFactory;
 using OpenMatchDirector.Interceptors;
-using OpenMatchDirector.Options;
 
 namespace OpenMatchDirector.Clients.OpenMatchBackend;
 

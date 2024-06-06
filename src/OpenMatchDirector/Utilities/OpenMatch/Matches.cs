@@ -1,4 +1,4 @@
-namespace OpenMatchDirector.OpenMatch;
+namespace OpenMatchDirector.Utilities.OpenMatch;
 
 public sealed class FetchMatches(BackendService.BackendServiceClient _client)
 {
