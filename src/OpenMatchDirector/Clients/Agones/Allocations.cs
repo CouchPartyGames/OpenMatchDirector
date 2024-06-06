@@ -1,6 +1,6 @@
-namespace Director.Agones;
-
 using Allocation;
+
+namespace OpenMatchDirector.Clients.Agones;
 
 public sealed class ServerAllocations
 {

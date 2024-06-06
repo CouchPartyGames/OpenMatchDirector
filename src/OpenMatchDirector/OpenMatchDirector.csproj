@@ -40,4 +40,7 @@
     <Protobuf Include="Protos\protoc-gen-openapiv2\options\openapiv2.proto" GrpcServices="None" Access="Internal" AdditionalImportDirs="Protos" />
     <Protobuf Include="Protos\sdk\sdk.proto" GrpcServices="None" Access="Internal" AdditionalImportDirs="Protos" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Options\" />
+  </ItemGroup>
 </Project>

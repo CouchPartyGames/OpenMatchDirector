@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 
-namespace OpenMatchDirector.Options;
+namespace OpenMatchDirector.Clients.Agones;
 
 public sealed class AllocationOptions
 {

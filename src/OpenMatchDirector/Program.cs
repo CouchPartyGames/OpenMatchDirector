@@ -1,41 +1,28 @@
 using Grpc.Net.Client.Balancer;
-using Grpc.Net.ClientFactory;
-using Microsoft.Extensions.Diagnostics.Metrics;
-using Microsoft.Extensions.Http.Resilience;
 using OpenMatchDirector;
+using OpenMatchDirector.Clients.Agones;
+using OpenMatchDirector.Clients.OpenMatchBackend;
 using OpenMatchDirector.Interceptors;
+using OpenMatchDirector.Observability;
 using OpenMatchDirector.Options;
 using OpenMatchDirector.Profiles;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services
     .Configure<OpenMatchOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
-builder.Services
-    .Configure<OpenTelemetryOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
 
-var resourceBuilder = ResourceBuilder
-    .CreateDefault()
-    .AddService("OpenMatchDirector", null, "1.0.0")
-    .AddTelemetrySdk();
+    // Observability
+builder.Logging.AddObservabilityLogging(builder.Configuration, OtelResourceBuilder.ResourceBuilder);
+builder.Services.AddObservabilityMetrics(builder.Configuration, OtelResourceBuilder.ResourceBuilder);
+builder.Services.AddObservabilityTracing(builder.Configuration, OtelResourceBuilder.ResourceBuilder);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddOpenTelemetry(opts =>
-{
-    opts.SetResourceBuilder(resourceBuilder);
-    opts.IncludeScopes = true;
-    opts.IncludeFormattedMessage = true;
-    opts.AddOtlpExporter(export =>
-    {
-        export.Endpoint = new Uri("http://localhost:4317");
-        export.Protocol = OtlpExportProtocol.Grpc;
-    });
-});
+    // Clients
+builder.Services.AddBackendClient(builder.Configuration);
+builder.Services.AddAgonesClient(builder.Configuration);
+
+
+    // Service (Background)
 builder.Services.Configure<HostOptions>(o =>
 {
     o.ShutdownTimeout = TimeSpan.FromSeconds(15);
@@ -43,60 +30,6 @@ builder.Services.Configure<HostOptions>(o =>
     o.ServicesStopConcurrently = true;
     o.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 });
-/*
-builder.Services
-    .AddOptions<AllocationList>()
-    .Bind(builder.Configuration, options =>
-    {
-        options.ErrorOnUnknownConfiguration = true;
-    })
-    .ValidateDataAnnotations()
-    .ValidateOnStart();
-*/
-
-builder.Services
-    .AddGrpcClient<BackendService.BackendServiceClient>(o =>
-    {
-        var address = builder.Configuration["OPENMATCH_BACKEND_HOST"] ??
-                      "http://open-match-backend.open-match.svc.cluster.local:50505";
-        o.Address = new Uri(address);
-    })
-    .ConfigurePrimaryHttpMessageHandler(() =>
-    {
-        var handler = new HttpClientHandler();
-        handler.ServerCertificateCustomValidationCallback =
-            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-        return handler;
-    })
-    .AddInterceptor<ExceptionInterceptor>(InterceptorScope.Channel)
-    .AddStandardResilienceHandler();
-
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(opts =>
-    {
-        opts.SetResourceBuilder(resourceBuilder);
-        opts.AddRuntimeInstrumentation()
-            .AddHttpClientInstrumentation();
-        
-        opts.AddOtlpExporter(export =>
-        {
-            export.Endpoint = new Uri("http://localhost:4317");
-            export.Protocol = OtlpExportProtocol.Grpc;
-        });
-    })
-    .WithTracing(opts =>
-    {
-        opts.SetResourceBuilder(resourceBuilder);
-        opts.SetSampler(new TraceIdRatioBasedSampler(1.0f));
-        opts.AddHttpClientInstrumentation();
-        opts.AddOtlpExporter(export =>
-        {
-            export.Endpoint = new Uri("http://localhost:4317");
-            export.Protocol = OtlpExportProtocol.Grpc;
-        });
-    });
-
-
 var defaultProfile = new DefaultProfiles();
 
 builder.Services.AddSingleton<ResolverFactory>(

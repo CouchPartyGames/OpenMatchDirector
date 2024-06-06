@@ -1,5 +1,3 @@
-using Director.Agones;
-
 namespace OpenMatchDirector.OpenMatch;
 
 public sealed class Assign
