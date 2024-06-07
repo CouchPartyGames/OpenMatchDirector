@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-OpenMatchDirector-7bf44ee3-cfc2-46d4-af18-64c3bd6ada59</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RuntimeIdentifiers>win-x64;osx-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,8 +41,5 @@
     <Protobuf Include="Protos\protoc-gen-openapiv2\options\annotations.proto" GrpcServices="None" Access="Internal" AdditionalImportDirs="Protos" />
     <Protobuf Include="Protos\protoc-gen-openapiv2\options\openapiv2.proto" GrpcServices="None" Access="Internal" AdditionalImportDirs="Protos" />
     <Protobuf Include="Protos\sdk\sdk.proto" GrpcServices="None" Access="Internal" AdditionalImportDirs="Protos" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\" />
   </ItemGroup>
 </Project>
