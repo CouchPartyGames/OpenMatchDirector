@@ -8,8 +8,6 @@ using OpenMatchDirector.Utilities.Profiles;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services
-    .Configure<OpenMatchOptions>(builder.Configuration.GetSection(OpenMatchOptions.SectionName));
 
     // Observability
 builder.Logging.AddObservabilityLogging(builder.Configuration, OtelResourceBuilder.ResourceBuilder);

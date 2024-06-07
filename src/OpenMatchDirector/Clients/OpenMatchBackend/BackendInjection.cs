@@ -8,7 +8,7 @@ public static class BackendInjection
     public static IServiceCollection AddBackendClient(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<OpenMatchOptions>(configuration.GetSection(OpenMatchOptions.SectionName));
+        services.Configure<BackendOptions>(configuration.GetSection(BackendOptions.SectionName));
         
         services
             .AddGrpcClient<BackendService.BackendServiceClient>(o =>
