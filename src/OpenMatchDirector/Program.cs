@@ -8,13 +8,14 @@ using OpenMatchDirector.Utilities.Profiles;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-
     // Observability
 builder.Logging.AddObservabilityLogging(builder.Configuration, OtelResourceBuilder.ResourceBuilder);
 builder.Services.AddObservabilityMetrics(builder.Configuration, OtelResourceBuilder.ResourceBuilder);
 builder.Services.AddObservabilityTracing(builder.Configuration, OtelResourceBuilder.ResourceBuilder);
 
     // Clients
+builder.Services.AddSingleton<ResolverFactory>(
+    sp => new DnsResolverFactory(refreshInterval: TimeSpan.FromSeconds(30)));
 builder.Services.AddBackendClient(builder.Configuration);
 builder.Services.AddAgonesClient(builder.Configuration);
 
@@ -28,9 +29,6 @@ builder.Services.Configure<HostOptions>(o =>
     o.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 });
 var defaultProfile = new DefaultProfiles();
-
-builder.Services.AddSingleton<ResolverFactory>(
-    sp => new DnsResolverFactory(refreshInterval: TimeSpan.FromSeconds(30)));
 builder.Services.AddTransient<ExceptionInterceptor>();
 builder.Services.AddSingleton<IProfileFunctionMap>(defaultProfile);
 builder.Services.AddHostedService<Worker>();
