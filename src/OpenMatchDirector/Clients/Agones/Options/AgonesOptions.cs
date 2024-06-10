@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 
-namespace OpenMatchDirector.Clients.Agones;
+namespace OpenMatchDirector.Clients.Agones.Options;
 
 public sealed class AgonesOptions
 {

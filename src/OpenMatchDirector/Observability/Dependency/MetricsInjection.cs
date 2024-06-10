@@ -1,8 +1,9 @@
+using OpenMatchDirector.Observability.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 
-namespace OpenMatchDirector.Observability;
+namespace OpenMatchDirector.Observability.Dependency;
 
 public static class MetricsInjection
 {

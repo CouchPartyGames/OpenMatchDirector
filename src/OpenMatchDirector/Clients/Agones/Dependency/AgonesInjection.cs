@@ -1,4 +1,4 @@
-namespace OpenMatchDirector.Clients.Agones;
+namespace OpenMatchDirector.Clients.Agones.Dependency;
 
 public static class AgonesInjection
 {

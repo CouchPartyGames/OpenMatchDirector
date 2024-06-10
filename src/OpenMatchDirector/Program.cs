@@ -1,9 +1,10 @@
 using Grpc.Net.Client.Balancer;
 using OpenMatchDirector;
-using OpenMatchDirector.Clients.Agones;
+using OpenMatchDirector.Clients.Agones.Dependency;
 using OpenMatchDirector.Clients.OpenMatchBackend;
 using OpenMatchDirector.Interceptors;
 using OpenMatchDirector.Observability;
+using OpenMatchDirector.Observability.Dependency;
 using OpenMatchDirector.Utilities.Profiles;
 
 var builder = Host.CreateApplicationBuilder(args);

@@ -1,8 +1,9 @@
+using OpenMatchDirector.Observability.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 
-namespace OpenMatchDirector.Observability;
+namespace OpenMatchDirector.Observability.Dependency;
 
 public static class LoggingInjection
 {
@@ -15,6 +16,7 @@ public static class LoggingInjection
             .Get<OpenTelemetryOptions>();
         
         loggingBuilder.ClearProviders();
+        loggingBuilder.AddConsole();
         loggingBuilder.AddOpenTelemetry(opts =>
         {
             opts.SetResourceBuilder(resourceBuilder);

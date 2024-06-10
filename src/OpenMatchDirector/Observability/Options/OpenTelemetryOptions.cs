@@ -1,4 +1,4 @@
-namespace OpenMatchDirector.Observability;
+namespace OpenMatchDirector.Observability.Options;
 
 public sealed class OpenTelemetryOptions
 {

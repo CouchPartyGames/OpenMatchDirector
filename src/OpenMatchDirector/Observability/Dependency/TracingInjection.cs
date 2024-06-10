@@ -1,8 +1,9 @@
+using OpenMatchDirector.Observability.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace OpenMatchDirector.Observability;
+namespace OpenMatchDirector.Observability.Dependency;
 
 public static class TracingInjection
 {
