@@ -10,13 +10,12 @@ public class DefaultProfiles : IProfileFunctionMap
         {
             Name = "default-profile"
         };
-        var defaultFunc = FunctionHelper.NewFunctionConfig("test", 5505);
+        var defaultFunc = FunctionHelper.NewFunctionConfig(ProfileOptions.OpenMatchFunctionDefaultHost, 
+            ProfileOptions.OpenMatchFunctionDefaultPort);
         
-        //kvar func = Create
-        var map = new ProfileFunctionMap(defaultProfile, defaultFunc);
         return new List<ProfileFunctionMap>()
         {
-            map
+            new(defaultProfile, defaultFunc)
         };
     }
 }

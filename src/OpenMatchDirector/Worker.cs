@@ -56,7 +56,7 @@ public class Worker(ILogger<Worker> logger,
                 }
                 catch (RpcException ex)
                 {
-                    logger.LogError("Error: {Message}", ex.Message);
+                    _logger.LogError("Error: {Message}", ex.Message);
                 }
             }
 
