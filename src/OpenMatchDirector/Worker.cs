@@ -1,5 +1,5 @@
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using OpenMatchDirector.Utilities.Agones;
 using OpenMatchDirector.Utilities.OpenMatch;
 using OpenMatchDirector.Utilities.Profiles;
 
@@ -22,7 +22,7 @@ public class Worker(ILogger<Worker> logger,
             foreach (var map in profileFuncs)
             {
                 
-                var request = new FetchMatches.RequestBuilder()
+                var request = new MatchHelper.RequestBuilder()
                     .WithFunctionConfig(map.Function)
                     .WithMatchProfile(map.Profile)
                     .Build();
@@ -30,34 +30,21 @@ public class Worker(ILogger<Worker> logger,
                 _logger.LogInformation("Request: {request}", request);
                 
                     // Fetch Matches
-                using var call = beClient.FetchMatches(request);
+                using var call = beClient.FetchMatches(request, cancellationToken: stoppingToken);
                 await foreach (var response in call.ResponseStream.ReadAllAsync(stoppingToken))
                 {
-
-                    RepeatedField<string> ticketIds = [];
-                    foreach (var id in response.Match.Tickets)
-                    {
-                       ticketIds.Add(id.Id); 
-                    }
+                    var ticketList = response.Match.Tickets.Select(x => x.Id).ToList();
+                    RepeatedField<string> ticketIds = [..ticketList];
                     
                         // Allocate
-                    var connection = "192.168.1.1:5000";
-                    
-                        // Assignment
-                    AssignmentGroup assignGroup = new AssignmentGroup
-                    {
-                        Assignment =
-                        {
-                            Connection = connection
-                        }
-                    };
-                    //test.Assignment.Extensions = new MapField<string, Any>();
-                    assignGroup.TicketIds.Add(ticketIds);
-                    
-                    var assignRequest = new Assign.RequestBuilder()
-                        .WithAssignmentGroup(assignGroup)
+                    var host = AgonesHelper.NewFakeHost();
+
+                    var group = AssignmentHelper.NewAssignmentGroup(ticketIds, host.Address, host.Port);
+                    var assignRequest = new AssignmentHelper.RequestBuilder()
+                        .WithAssignmentGroup(group)
                         .Build();
-                    var assignResponse = await beClient.AssignTicketsAsync(assignRequest);
+                    
+                    var assignResponse = await beClient.AssignTicketsAsync(assignRequest, cancellationToken: stoppingToken);
                     if (assignResponse.Failures.Count > 0)
                     {
                         
@@ -72,7 +59,6 @@ public class Worker(ILogger<Worker> logger,
 
     public Task StartingAsync(CancellationToken cancellationToken)
     {
-        Console.WriteLine("hello");
         _logger.LogInformation("Starting at: {time}", DateTimeOffset.Now);
         return Task.CompletedTask;
     }

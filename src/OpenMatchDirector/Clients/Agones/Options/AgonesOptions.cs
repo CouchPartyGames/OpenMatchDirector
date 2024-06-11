@@ -6,8 +6,10 @@ public sealed class AgonesOptions
 {
     public const string SectionName = "Agones";
 
-    public string Name { get; init; } = "Agones";
-    public string Address { get; init; }
+    public string Name { get; init; } = "Agones Virginia";
+    
+    public string Address { get; init; } = "us1.agones.couchparty.games";
+    
     public int Port { get; init; } = 443;
 }
 
