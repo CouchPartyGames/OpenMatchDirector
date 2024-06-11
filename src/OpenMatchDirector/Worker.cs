@@ -36,6 +36,8 @@ public class Worker(ILogger<Worker> logger,
                     await foreach (var response in call.ResponseStream.ReadAllAsync(stoppingToken))
                     {
                         var ticketList = response.Match.Tickets.Select(x => x.Id).ToList();
+                        if (ticketList.Count == 0)
+                            break;
                         RepeatedField<string> ticketIds = [..ticketList];
 
                         // Allocate

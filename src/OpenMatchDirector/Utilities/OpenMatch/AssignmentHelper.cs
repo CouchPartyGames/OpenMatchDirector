@@ -16,23 +16,12 @@ public static class AssignmentHelper
         };
     }
     
-    public static AssignmentGroup NewAssignmentGroup(RepeatedField<string> tickets, Assignment assignment)
-    {
-        return new AssignmentGroup
-        {
-            TicketIds = { tickets },
-            Assignment = assignment
-        };
-    }
     
     public static AssignmentGroup NewAssignmentGroup(RepeatedField<string> tickets, string address, int port)
-    {
-        return new AssignmentGroup
-        {
-            TicketIds = { tickets },
-            Assignment = NewAssignment(address, port)
-        };
-    } 
+        => NewAssignmentGroup(tickets, NewAssignment(address, port));
+    
+    public static AssignmentGroup NewAssignmentGroup(RepeatedField<string> tickets, Assignment assignment) 
+        => new AssignmentGroup { TicketIds = { tickets }, Assignment = assignment };
 
     
     
