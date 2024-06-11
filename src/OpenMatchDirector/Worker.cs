@@ -40,6 +40,7 @@ public class Worker(ILogger<Worker> logger,
 
                         // Allocate
                         var host = AgonesHelper.NewFakeHost();
+                        //Metrics - AddAllocationSuccess();
 
                         var group = AssignmentHelper.NewAssignmentGroup(ticketIds, host.Address, host.Port);
                         var assignRequest = new AssignmentHelper.RequestBuilder()
@@ -48,9 +49,19 @@ public class Worker(ILogger<Worker> logger,
 
                         var assignResponse =
                             await beClient.AssignTicketsAsync(assignRequest, cancellationToken: stoppingToken);
-                        if (assignResponse.Failures.Count > 0)
+                        if (assignResponse.Failures.Count == 0)
                         {
-
+                            //Metrics - AddAssignmentSuccess();
+                        } 
+                        else 
+                        {
+                            assignResponse.Failures.ToList().ForEach(x =>
+                            {
+                                logger.LogError("Assigment Error: {TicketId} Reason: {Reason} ", 
+                                    x.TicketId, x.Cause.ToString());
+                                //Metrics.AddAssignmentFailureNotFound();
+                                //Metrics.AddAssignmentFailureUnknown();
+                            });
                         }
                     }
                 }
