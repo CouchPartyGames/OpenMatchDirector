@@ -9,11 +9,6 @@ public static class FunctionHelper
     public static FunctionConfig NewFunctionConfig(string host, int port, bool isGrpc = true)
     {
         var type = isGrpc ? FunctionConfig.Types.Type.Grpc : FunctionConfig.Types.Type.Rest;
-        return new FunctionConfig
-        {
-            Host = host,
-            Port = port,
-            Type = type
-        };
+        return NewFunctionConfig(host, port, type);
     }
 }

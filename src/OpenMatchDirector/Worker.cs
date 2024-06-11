@@ -28,27 +28,35 @@ public class Worker(ILogger<Worker> logger,
                     .Build();
                 
                 _logger.LogInformation("Request: {request}", request);
-                
-                    // Fetch Matches
-                using var call = beClient.FetchMatches(request, cancellationToken: stoppingToken);
-                await foreach (var response in call.ResponseStream.ReadAllAsync(stoppingToken))
-                {
-                    var ticketList = response.Match.Tickets.Select(x => x.Id).ToList();
-                    RepeatedField<string> ticketIds = [..ticketList];
-                    
-                        // Allocate
-                    var host = AgonesHelper.NewFakeHost();
 
-                    var group = AssignmentHelper.NewAssignmentGroup(ticketIds, host.Address, host.Port);
-                    var assignRequest = new AssignmentHelper.RequestBuilder()
-                        .WithAssignmentGroup(group)
-                        .Build();
-                    
-                    var assignResponse = await beClient.AssignTicketsAsync(assignRequest, cancellationToken: stoppingToken);
-                    if (assignResponse.Failures.Count > 0)
+                try
+                {
+                    // Fetch Matches
+                    using var call = beClient.FetchMatches(request, cancellationToken: stoppingToken);
+                    await foreach (var response in call.ResponseStream.ReadAllAsync(stoppingToken))
                     {
-                        
+                        var ticketList = response.Match.Tickets.Select(x => x.Id).ToList();
+                        RepeatedField<string> ticketIds = [..ticketList];
+
+                        // Allocate
+                        var host = AgonesHelper.NewFakeHost();
+
+                        var group = AssignmentHelper.NewAssignmentGroup(ticketIds, host.Address, host.Port);
+                        var assignRequest = new AssignmentHelper.RequestBuilder()
+                            .WithAssignmentGroup(group)
+                            .Build();
+
+                        var assignResponse =
+                            await beClient.AssignTicketsAsync(assignRequest, cancellationToken: stoppingToken);
+                        if (assignResponse.Failures.Count > 0)
+                        {
+
+                        }
                     }
+                }
+                catch (RpcException ex)
+                {
+                    logger.LogError(ex.Message);
                 }
             }
 

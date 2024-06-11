@@ -1,12 +1,17 @@
+using Grpc.Core;
+
 namespace OpenMatchDirector.Utilities.OpenMatch;
 
 public sealed class MatchHelper
 {
-    public static async Task<bool> Fetch(BackendService.BackendServiceClient client, FetchMatchesRequest request)
+    /*
+    public static async Task Fetch(BackendService.BackendServiceClient client, FetchMatchesRequest request)
     {
         var response = client.FetchMatches(request);
-        return true;
-    }
+        //var readAllAsync = response.ResponseStream.ReadAllAsync();
+        //readAllAsync
+        return response;
+    }*/
 
 
     public sealed class RequestBuilder
