@@ -8,7 +8,7 @@ public static class BackendInjection
     public static IServiceCollection AddBackendClient(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<BackendOptions>(configuration.GetSection(BackendOptions.SectionName));
+        var options = services.Configure<BackendOptions>(configuration.GetSection(BackendOptions.SectionName));
         
         services
             .AddGrpcClient<BackendService.BackendServiceClient>(o =>
@@ -17,6 +17,17 @@ public static class BackendInjection
                               "http://open-match-backend.open-match.svc.cluster.local:50505";
                 o.Address = new Uri(address);
             })
+            /*.ConfigureChannel(o =>
+            {
+                o.HttpHandler = new SocketsHttpHandler()
+                {
+                    PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+                    KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+                    KeepAlivePingDelay = TimeSpan.FromSeconds(60),
+                    EnableMultipleHttp2Connections = true
+                };
+                o.MaxRetryAttempts = 4;
+            })*/
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();

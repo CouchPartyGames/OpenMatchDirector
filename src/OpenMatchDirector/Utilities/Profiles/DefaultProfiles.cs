@@ -1,3 +1,5 @@
+using OpenMatchDirector.Utilities.OpenMatch;
+
 namespace OpenMatchDirector.Utilities.Profiles;
 
 public class DefaultProfiles : IProfileFunctionMap
@@ -8,13 +10,12 @@ public class DefaultProfiles : IProfileFunctionMap
         {
             Name = "default-profile"
         };
-        var defaultFunc = Utilities.OpenMatch.Profiles.CreateFunctionConfig("test", 5505);
+        var defaultFunc = FunctionHelper.NewFunctionConfig(ProfileOptions.OpenMatchFunctionDefaultHost, 
+            ProfileOptions.OpenMatchFunctionDefaultPort);
         
-        //kvar func = Create
-        var map = new ProfileFunctionMap(defaultProfile, defaultFunc);
         return new List<ProfileFunctionMap>()
         {
-            map
+            new(defaultProfile, defaultFunc)
         };
     }
 }
