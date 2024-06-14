@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="0.2.4"></a>
+## 0.2.4 (2024-06-14)
+
+### Bug Fixes
+
+* avoid allocation and assignment if no tickets
+* correct profiles
+
 <a name="0.2.3"></a>
 ## 0.2.3 (2024-06-11)
 
