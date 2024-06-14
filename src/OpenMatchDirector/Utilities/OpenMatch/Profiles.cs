@@ -19,7 +19,7 @@ public sealed class Profiles
         return _profiles;
     }
 
-    public class PoolBuilder
+    public sealed class PoolBuilder
     {
         private Pool _pool = new();
         
