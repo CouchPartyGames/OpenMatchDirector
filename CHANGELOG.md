@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="0.2.5"></a>
+## 0.2.5 (2024-06-14)
+
+### Bug Fixes
+
+* add default pool to director
+
 <a name="0.2.4"></a>
 ## 0.2.4 (2024-06-14)
 
