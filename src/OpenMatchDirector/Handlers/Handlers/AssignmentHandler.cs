@@ -1,21 +1,23 @@
-using OpenMatchDirector.Utilities.OpenMatch;
+namespace OpenMatchDirector.Handlers.Handlers;
 
-namespace OpenMatchDirector.Handlers;
 
 /*
-public sealed class AssignmentHandler: IChainHandler
+public sealed class AssignmentHandler: IPipelineStep
 {
-    private IChainHandler Successor;
+    private List<string> ticketIds;
     
-    public void Process()
+    public void Process(
+        List<string> ticketIds,
+        string host,
+        int port,
+        CancellationToken token)
     {
-        var group = AssignmentHelper.NewAssignmentGroup(ticketIds, host.Address, host.Port);
+        var group = AssignmentHelper.NewAssignmentGroup(ticketIds, address, port);
         var assignRequest = new AssignmentHelper.RequestBuilder()
             .WithAssignmentGroup(group)
             .Build();
 
-        var assignResponse =
-            await beClient.AssignTicketsAsync(assignRequest, cancellationToken: stoppingToken);
+        var assignResponse = await beClient.AssignTicketsAsync(assignRequest, cancellationToken: token);
         if (assignResponse.Failures.Count == 0)
         {
             LogSuccess();

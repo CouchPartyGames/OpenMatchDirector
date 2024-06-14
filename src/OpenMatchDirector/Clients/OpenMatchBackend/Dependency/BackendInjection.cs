@@ -1,4 +1,5 @@
 using Grpc.Net.ClientFactory;
+using OpenMatchDirector.Clients.OpenMatchBackend.Options;
 using OpenMatchDirector.Interceptors;
 
 namespace OpenMatchDirector.Clients.OpenMatchBackend;
@@ -14,7 +15,7 @@ public static class BackendInjection
             .AddGrpcClient<BackendService.BackendServiceClient>(o =>
             {
                 var address = configuration["OPENMATCH_BACKEND_HOST"] ??
-                              "http://open-match-backend.open-match.svc.cluster.local:50505";
+                              BackendOptions.OpenMatchBackendDefaultAddress; 
                 o.Address = new Uri(address);
             })
             /*.ConfigureChannel(o =>
@@ -37,6 +38,8 @@ public static class BackendInjection
             })
             .AddInterceptor<ExceptionInterceptor>(InterceptorScope.Channel)
             .AddStandardResilienceHandler();
+        
+        services.AddTransient<ExceptionInterceptor>();
         
         return services;
     }

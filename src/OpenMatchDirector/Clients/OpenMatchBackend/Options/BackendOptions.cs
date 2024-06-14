@@ -1,11 +1,10 @@
-namespace OpenMatchDirector.Clients.OpenMatchBackend;
+namespace OpenMatchDirector.Clients.OpenMatchBackend.Options;
 
 public sealed class BackendOptions
 {
     public const string SectionName = "OpenMatchBackend";
 
-    public const string OpenMatchBackendDefaultHost = "open-match-backend.open-match.svc.cluster.local";
-    public const int OpenMatchBackendDefaultPort = 50505;
+    public const string OpenMatchBackendDefaultAddress = "http://open-match-backend.open-match.svc.cluster.local:50505";
 
-    public string BackendServiceAddr { get; init; } = "http://open-match-backend.open-match.svc.cluster.local:50505";
+    public string BackendServiceAddress { get; init; } = OpenMatchBackendDefaultAddress;
 }

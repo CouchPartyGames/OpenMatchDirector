@@ -30,7 +30,6 @@ builder.Services.Configure<HostOptions>(o =>
     o.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 });
 var defaultProfile = new DefaultProfiles();
-builder.Services.AddTransient<ExceptionInterceptor>();
 builder.Services.AddSingleton<IProfileFunctionMap>(defaultProfile);
 builder.Services.AddHostedService<Worker>();
 

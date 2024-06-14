@@ -1,4 +1,3 @@
-using Grpc.Core;
 using OpenMatchDirector.Utilities.Agones;
 using OpenMatchDirector.Utilities.OpenMatch;
 using OpenMatchDirector.Utilities.Profiles;
@@ -27,7 +26,7 @@ public class Worker(ILogger<Worker> logger,
                     .WithMatchProfile(map.Profile)
                     .Build();
                 
-                _logger.LogInformation("Request: {request}", request);
+                _logger.LogInformation("Fetch Matches Request: {request}", request);
 
                 try
                 {
@@ -44,6 +43,7 @@ public class Worker(ILogger<Worker> logger,
                         var host = AgonesHelper.NewFakeHost();
                         //Metrics - AddAllocationSuccess();
 
+                        /*
                         var group = AssignmentHelper.NewAssignmentGroup(ticketIds, host.Address, host.Port);
                         var assignRequest = new AssignmentHelper.RequestBuilder()
                             .WithAssignmentGroup(group)
@@ -65,6 +65,7 @@ public class Worker(ILogger<Worker> logger,
                                 //Metrics.AddAssignmentFailureUnknown();
                             });
                         }
+                        */
                     }
                 }
                 catch (RpcException ex)
