@@ -6,7 +6,7 @@ public class DefaultProfiles : IProfileFunctionMap
 {
     public List<ProfileFunctionMap> GenerateProfiles()
     {
-        var pool = new OpenMatch.Profiles.PoolBuilder()
+        var pool = new OpenMatch.PoolHelper.PoolBuilder()
             .WithName("default-pool")
             .Build();
         var defaultProfile = new MatchProfile
