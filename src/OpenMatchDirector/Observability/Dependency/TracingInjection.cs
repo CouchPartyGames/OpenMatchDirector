@@ -24,7 +24,6 @@ public static class TracingInjection
             {
                 opts.SetResourceBuilder(resourceBuilder);
                 opts.SetSampler(new TraceIdRatioBasedSampler(samplingRate));
-                opts.AddHttpClientInstrumentation();
                 opts.AddHttpClientInstrumentation()
                     .AddGrpcClientInstrumentation();
                 
