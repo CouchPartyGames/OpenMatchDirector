@@ -31,4 +31,32 @@ public static class LoggingInjection
         
         return loggingBuilder;
     }
+    
+    public static IServiceCollection AddObservabilityLogging(this IServiceCollection services,
+        IConfiguration configuration,
+        ResourceBuilder resourceBuilder)
+    {
+        var options = configuration
+            .GetSection(OpenTelemetryOptions.SectionName)
+            .Get<OpenTelemetryOptions>();
+
+        services.AddOpenTelemetry().WithLogging(logging =>
+            {
+                logging.SetResourceBuilder(resourceBuilder);
+                logging.AddConsoleExporter();
+                logging.AddOtlpExporter(export =>
+                {
+                    export.Endpoint = new Uri(OpenTelemetryOptions.OtelDefaultHost);
+                    export.Protocol = OtlpExportProtocol.Grpc;
+                });
+            },
+            logOptions =>
+            {
+                logOptions.IncludeFormattedMessage = true;
+                logOptions.IncludeScopes = true;
+                logOptions.ParseStateValues = true;
+            });
+
+        return services;
+    }
 }
