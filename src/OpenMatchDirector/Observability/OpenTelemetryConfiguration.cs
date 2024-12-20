@@ -25,7 +25,7 @@ public static class OpenTelemetryConfiguration
             .ConfigureResource(configure =>
             {
                 configure
-                    .AddService(GlobalConsts.ServiceName, null, GlobalConsts.ServiceVersion)
+                    .AddService(GlobalConstants.ServiceName, null, GlobalConstants.ServiceVersion)
                     .AddTelemetrySdk()
                     //.AddAttributes()
                     .Build();

@@ -1,6 +1,6 @@
 namespace OpenMatchDirector;
 
-public static class GlobalConsts
+public static class GlobalConstants
 {
     public const string ServiceName = "OpenMatchDirector";
 
